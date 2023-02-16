@@ -1,31 +1,23 @@
 #include "Graph.hpp"
 
+/*
 template <typename T>
-void Graph<T>::addVertex() 
+void Graph<T>::removeVertex()	//PROBLEMA: rimuovendo un vertice gli altri scalano, perdendo i nomi dei grafi.
 {
-	using namespace Graph
-	//aggiungere un vertice significa instanziare una nuova forward_list<pair<T>> vuota, e fare il push_back della lista al vector di vertici.
-	adj_list
 	std::cout << "I still do nothing! Implement me!";
 }
+*/
 
 template <typename T>
-void Graph<T>::removeVertex()
+void Graph<T>::addEdge(int src,int dst, T weigth)
 {
-	std::cout << "I still do nothing! Implement me!";
+	if (adj_list.size() <= src)
+	{
+		adj_list.resize(src+1);
+	}
+	adj_list[src].push_front(std::make_pair(dst, weigth));
 }
 
-template <typename T>
-void Graph<T>::addEdge()
-{
-	std::cout << "I still do nothing! Implement me!";
-}
-
-template <typename T>
-void Graph<T>::removeEdge()
-{
-	std::cout << "I still do nothing! Implement me!";
-}
 
 template <typename T>
 const void Graph<T>::dijkstra() //TODO sistemare tipo di ritorno

@@ -6,8 +6,45 @@
 
 int main()
 {
+	
+	Graph<double> g;
+	g.addEdge(0, 1, 1.2);
+	g.addEdge(0, 2, 3.4);
+	g.addEdge(1, 2, 5.6);
+	g.addEdge(2, 0, 7.8);
+	g.addEdge(2, 3, 9.0);
+	g.addEdge(3, 3, 10.1);
+	g.addEdge(90, 100, 5000);
+	
+	//auto it = g.v_begin();
+
+	
+	for (auto it = g.v_begin(); it != g.v_end(); ++it) 
+	{
+		std::cout << "Vertice in analisi:" << it.get_index() << ": ";
+		//auto adj = g.getAdjList()[it.get_index()];
+		//stampa tutti gli archi collegati a it
+		/*
+		for (auto it2 = g.e_begin(it.get_index()); it2 != g.e_end(it.get_index()); ++it2)
+		{
+			std::cout << it2.get_index() << " ";
+		}
+		*/
+		
+		std::cout << std::endl;
+	}
+	
+	return 0;
+
+	
+}
+
+	
+
+
+void menu()
+{
 	int selection = 0;
-	Graph<std::string> g;
 	do
 	{
 		std::cout << std::endl << "---GRAPH DEMO:---" << std::endl << std::endl;
@@ -25,9 +62,9 @@ int main()
 		{
 			//GRAPH for BELLMAN-FORD testing, as for graph_demo_0.png 
 			//add vertices
-			
+
 			//add edges
-			
+
 			//std::cout << "graph_demo_0 has been loaded and is ready." << std::endl;
 			break;
 		}
@@ -35,9 +72,9 @@ int main()
 		{
 			//GRAPH for DIJKSTRA testing, as for graph_demo_1.png 
 			//add vertices
-			
+
 			//add edges
-			
+
 			//std::cout << "graph_demo_1 has been loaded and is ready." << std::endl;
 			break;
 		}
@@ -45,9 +82,9 @@ int main()
 		{
 			//GRAPH for BELLMAN-FORD testing, as for graph_demo_1.png 
 			//add vertices
-			
+
 			//add edges
-			
+
 			//std::cout << "graph_demo_2 has been loaded and is ready." << std::endl;
 			break;
 		}
@@ -124,5 +161,6 @@ int main()
 
 		}
 	} while (selection != 6);
+
 }
 
