@@ -1,16 +1,14 @@
-﻿template <typename T>
+template <typename T>
 class Graph
 {
 public:
-	//costruttori
+
 	Graph() {};		//costruttore di default
-
-	//metodi
-	//void removeVertex(); rimossa per consistenza dei dati
 	void addEdge(int src, int dst, T weigth);
-	//void removeEdge(); rimossa per consistenza dei dati.
 
-	class vertex_iterator
+
+	//iteratore per i vertici
+	class VertexIterator
 	{
 	public:
 		//iterator traits
@@ -19,30 +17,31 @@ public:
 		using reference = int&;
 		using pointer = int*;
 		using difference_type = std::ptrdiff_t;
-
 		//convenience aliases
 		using collection_data_type = std::vector<std::forward_list<std::pair<int, T>>>; //usiamo un alias per evitare di scrivere ogni volta il tipo completo
 
-		vertex_iterator() = default;	//default constructible
-		~vertex_iterator() = default;	//destructor
+		VertexIterator() = default;	//default constructible
+		~VertexIterator() = default;	//destructor
 
-		vertex_iterator(const collection_data_type& adj_list, int pos = 0) :	//costruttore di copia che riceve un riferimento alla lista di adiacenza e un indice di partenza
+		VertexIterator(const collection_data_type& adj_list, int pos = 0) :	//costruttore di copia che riceve un riferimento alla lista di adiacenza e un indice di partenza
 			adj_list{ &adj_list },												//assegna i membri ai parametri
-			pos{pos}
-		{advance_to_valid();}													//e avanza al primo vertice valido
+			pos{ pos }
+		{
+			advance_to_valid();
+		}													//e avanza al primo vertice valido
 
 		//overload degli operatori
-		vertex_iterator& operator++() {++pos; advance_to_valid(); return *this;}				//pre-incremento con avanzamento al prossimo vertice valido
-		vertex_iterator operator++(int) {vertex_iterator old(*this); ++(*this); return old;}	//post-incremento con avanzamento al prossimo vertice valido
-		bool operator==(const vertex_iterator& other) const {return pos == other.pos;}			//uguaglianza
-		bool operator!=(const vertex_iterator& other) const {return !(*this == other);}			//disuguaglianza
-		inline int operator*() const {return pos;}												//dereferenziazione
+		VertexIterator& operator++() { ++pos; advance_to_valid(); return *this; }				//pre-incremento con avanzamento al prossimo vertice valido
+		VertexIterator operator++(int) { VertexIterator old(*this); ++(*this); return old; }	//post-incremento con avanzamento al prossimo vertice valido
+		bool operator==(const VertexIterator& other) const { return pos == other.pos; }			//uguaglianza
+		bool operator!=(const VertexIterator& other) const { return !(*this == other); }			//disuguaglianza
+		inline int operator*() const { return pos; }												//dereferenziazione
 		//mancano gli operatori -> e * perche' non abbiamo un puntatore a un oggetto, ma un iteratore a un intero.
-	
+
 	private:
-		void advance_to_valid()		//questa  funzione avanza al prossimo vertice valido, utile per non dover gestire a monte gli iteratori invalidi.
+		void advance_to_valid()		//questa funzione avanza al prossimo vertice valido, utile per non dover gestire a monte gli iteratori invalidi.
 		{
-			while (pos < adj_list->size() && (*adj_list)[pos].empty()) 
+			while (pos < adj_list->size() && (*adj_list)[pos].empty())
 			{
 				++pos;
 			}
@@ -51,82 +50,48 @@ public:
 		const collection_data_type* adj_list = nullptr;
 		int pos = 0;
 	};
+	VertexIterator begin() const { return VertexIterator(adj_list); }
+	VertexIterator end() const { return VertexIterator(adj_list, (int)adj_list.size()); } //TODO int casting o sistemare tipo
 
-	vertex_iterator begin() const {return vertex_iterator(adj_list);}
 
-	vertex_iterator end() const {return vertex_iterator(adj_list, adj_list.size());}
-	
-	
 	//edge iterator
-	template <typename T>
-	class edge_iterator : public std::iterator<std::forward_iterator_tag, std::pair<int, T>>
-	{
+	class EdgeIterator {
+
+		//iterator traits
+		using difference_type = std::ptrdiff_t; 
+		using value_type = std::pair<int, T>;
+		using pointer = std::pair<int, T>*;
+		using reference = std::pair<int, T>&;
+		using iterator_category = std::forward_iterator_tag;
+		//convenience alias
+		using AdjListIterator = typename std::forward_list<std::pair<int, T>>::iterator; //usiamo un alias per evitare di scrivere ogni volta il tipo completo
+
 	public:
-		edge_iterator(typename std::vector<std::forward_list<std::pair<int, T>>>::iterator it_list, typename std::forward_list<std::pair<int, T>>::iterator it_edge)
-			: it_list_(it_list), it_edge_(it_edge)
-		{}
-
-		edge_iterator& operator++()
-		{
-			++it_edge_;
-			if (it_edge_ == it_list_->end())
-			{
-				++it_list_;
-				if (it_list_ != end_list_)
-					it_edge_ = it_list_->begin();
-			}
-			return *this;
-		}
-
-		bool operator==(const edge_iterator& other) const
-		{
-			return it_list_ == other.it_list_ && it_edge_ == other.it_edge_;
-		}
-
-		bool operator!=(const edge_iterator& other) const
-		{
-			return !(*this == other);
-		}
-
-		std::pair<int, T>& operator*()
-		{
-			return *it_edge_;
-		}
-
-		std::pair<int, T>* operator->()
-		{
-			return &(*it_edge_);
-		}
+		EdgeIterator(AdjListIterator edge_it) : edge_it(edge_it) {}							// Costruttore di copia
+		reference operator*() {return *edge_it;}												// Operatore di dereferenziazione, restituisce l'arco corrente
+		EdgeIterator& operator++() {++edge_it;return *this;}									// Operatore di incremento prefisso, sposta l'iteratore all'arco successivo
+		EdgeIterator operator++(int) { EdgeIterator old(*this); ++(*this); return old; }		// Operatore di incremento postfisso, sposta l'iteratore all'arco successivo
+		bool operator==(const EdgeIterator& other) const {return edge_it == other.edge_it;}	// Operatore di uguaglianza, confronta gli iteratori correnti
+		bool operator!=(const EdgeIterator& other) const {return !(*this == other);} 			// Operatore di disuguaglianza, confronta gli iteratori correnti
 
 	private:
-		typename std::vector<std::forward_list<std::pair<int, T>>>::iterator it_list_;
-		typename std::vector<std::forward_list<std::pair<int, T>>>::iterator end_list_;
-		typename std::forward_list<std::pair<int, T>>::iterator it_edge_;
-
+		AdjListIterator edge_it;
 		friend class Graph<T>;
 	};
+	EdgeIterator begin(int v) {return EdgeIterator(adj_list[v].begin());}
+	EdgeIterator end(int v) {return EdgeIterator(adj_list[v].end());}
 
-	edge_iterator<T> begin(int v)
-	{
-		return edge_iterator<T>(adj_list.begin() + v, adj_list.at(v).begin());
-	}
-
-	edge_iterator<T> end(int v)
-	{
-		return edge_iterator<T>(adj_list.end(), adj_list.back().end());
-	}
-
-
-	/*
-	static const void dijkstra();
-	static const void bellmanFord();
-	*/
-	//getter&setter
+	
+	
+	static const std::vector<T> dijkstra(Graph g, int src);	//TODO cambiare da vector a graph
+	//static const Graph<T> bellmanFord(int src);
+	
+	
+	
 	const std::vector<std::forward_list<std::pair<int, T>>> getAdjList() { return adj_list; }
 
 
 private:
-
 	std::vector<std::forward_list<std::pair<int, T>>> adj_list;
 	//std::vector<std::forward_list<std::tuple<int, int, T>>> adj_list;
 };
