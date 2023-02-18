@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <chrono>
 
 #include "Graph.hpp"
 
@@ -95,9 +96,13 @@ void menu()
 			std::cout << "Source vertex: " << std::endl;
 			std::cin >> src;
 			auto res = Graph<double>();
+			auto tempo = 0;
 			try
 			{
+				auto inizio = std::chrono::high_resolution_clock::now();
 				res = Graph<double>::dijkstra(g, src);
+				auto fine = std::chrono::high_resolution_clock::now();
+				tempo = std::chrono::duration_cast<std::chrono::nanoseconds>(fine - inizio).count(); res = Graph<double>::dijkstra(g, src);
 			}
 			catch (const std::exception& e)
 			{
@@ -119,6 +124,8 @@ void menu()
 				}
 				std::cout << std::endl;
 			}
+			std::cout << "Dijkstra algorithm took " << tempo << " milliseconds to complete." << std::endl;
+
 			break;
 		}
 		case 5:
@@ -127,9 +134,13 @@ void menu()
 			std::cout << "Source vertex: " << std::endl;
 			std::cin >> src;
 			auto res = Graph<double>();
+			auto tempo = 0;
 			try
 			{
+				auto inizio = std::chrono::high_resolution_clock::now();
 				res = Graph<double>::bellmanFord(g, src);
+				auto fine = std::chrono::high_resolution_clock::now();
+				tempo = std::chrono::duration_cast<std::chrono::nanoseconds>(fine - inizio).count();
 			}
 			catch (const std::exception& e)
 			{
@@ -151,6 +162,7 @@ void menu()
 				}
 				std::cout << std::endl;
 			}
+			std::cout << "Bellman-Ford algorithm took " << tempo << " milliseconds to complete." << std::endl;
 			break;
 		}
 		case 6:
