@@ -2,44 +2,57 @@
 #include <vector>
 #include <forward_list>
 #include <queue>
-#include <climits>
+#include <limits>
+#include <unordered_set>
 
-using namespace std;
 
+//complessità (V + E log V)
 template <typename T>
-vector<T> dijkstra(vector<forward_list<pair<int, T>>>& graph, int start) { //grafo passato come vettore di liste linkate
+std::vector<T> dijkstra(std::vector<std::forward_list<std::pair<int, T>>>& graph, int start) { //grafo passato come vettore di liste linkate
     int n = graph.size();
+   
+    if (start < 0 || start >= n) {
+        throw std::invalid_argument("Nodo di partenza non valido");  // Verifica che il nodo di partenza sia valido
+    }
 
-    // Inizializzazione delle distanze
-    vector<T> dist(n, numeric_limits<T>::max()); //inizializzo il vettore delle distanze a infinito
-    dist[start] = 0; //distanza per la sorgente a zero
+    std::vector<T> distances(n, std::numeric_limits<T>::max());
+    distances[start] = 0;
 
-    // Coda con priorità degli elementi da esaminare
-    priority_queue<pair<T, int>, vector<pair<T, int>>, greater<pair<T, int>>> pq; 
-    //coda di priorità che riceve in input una coppia(T, int), costruisce la coda un vettore di pesi(T) e indice del vertice(int) e ordina direttamente in modo crescente in base alla distanza utilizzando la funzione greater
-    pq.push(make_pair(0, start)); //viene inserito nella coda con priorità il nodo di partenza start con distanza 0
+    std::priority_queue<std::pair<T, int>, std::vector<std::pair<T, int>>, std::greater<std::pair<T, int>>> pq;
+    pq.push(std::make_pair(0, start));
+    //coda di priorità che riceve in input una coppia(T, int), costruisce la coda un vettore di pesi(T) e indice del vertice(int) e ordina direttamente in modo crescente in base alla         distanza utilizzando la funzione greater
 
+    std::unordered_set<int> visited; //unordered_set ha una complessità minore rispetto a vector o list, controllo dell'appartenenza di un elemento all'insieme in tempo costante.
+    int iteration_count = 0;
+    
     while (!pq.empty()) {
-        // Prende il nodo con la minima distanza dalla coda con priorità
-        pair<T, int> top = pq.top();
+        std::pair<T, int> top = pq.top();  // Prende il vertice con la minima distanza dalla coda con priorità
         pq.pop();
         int u = top.second;
 
-        // Se abbiamo già trovato il percorso più breve verso u, passiamo al prossimo nodo
-        if (top.first > dist[u]) {
-            continue;   //todo modifica
+        // Controlla se il nodo corrente è già stato visitato
+        if (visited.find(u) != visited.end()) { //find restituisce un iteratore all'elemento trovato, oppure l'iteratore di fine dell'insieme se l'elemento non è presente
+        continue;
         }
+        visited.insert(u);
 
-        // Per ogni nodo v adiacente a u, aggiorna la distanza se possibile
-        for (auto& neighbor : graph[u]) {
-            int v = neighbor.first;
-            T w = neighbor.second;
-            if (dist[u] + w < dist[v]) {
-                dist[v] = dist[u] + w;
-                pq.push(make_pair(dist[v], v));
+        for (auto it = graph[u].begin(); it != graph[u].end(); ++it) {  //per ogni arco uscente dal vertice
+            int v = it->first;  //vertice di arrivo
+            T w = it->second;  //peso dell'arco
+
+            if (distances[v] > distances[u] + w) {  // Per ogni nodo v adiacente a u, aggiorna la distanza se coveniente
+                distances[v] = distances[u] + w;
+                pq.push(std::make_pair(distances[v], v));
             }
         }
-    }
 
-    return dist;
+        iteration_count++; // aumento il contatore ad ogni iterazione
+
+        if (iteration_count > n) { // se supero il numero massimo di iterazioni, significa che c'è un ciclo di peso negativo
+            throw std::runtime_error("Ciclo di peso negativo trovato");
+        }
+    }
+    
+
+    return distances;
 }
