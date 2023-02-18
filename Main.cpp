@@ -20,7 +20,7 @@ void menu()
 		std::cout << "5) Execute and print results of Bellman-Ford Algorithm on the graph" << std::endl;
 		std::cout << "6) Exit demo" << std::endl << std::endl;
 		std::cin >> selection;
-		switch (selection)
+		switch (selection) 
 		{
 		case 0:
 		{

@@ -9,10 +9,18 @@ class Graph
 {
 public:
 
-	Graph() {};		//costruttore di default
-	~Graph() = default;	//distruttore di default
+	//costruttori/distruttori
+	Graph() {};		
+	~Graph() = default;	
 
+	//metodi
 	void addEdge(int src, int dst, T weigth);
+	void reset();
+
+	//getter/setter
+	const std::vector<std::forward_list<std::pair<int, T>>> getAdjList();
+	const int getNumVertex();
+	const T getEdgeWeight(int src, int dst);
 
 	//iteratore per i vertici
 	class VertexIterator
@@ -57,11 +65,11 @@ public:
 		const collection_data_type* adj_list = nullptr;
 		int pos = 0;
 	};
-	VertexIterator begin() const { return VertexIterator(adj_list); }
-	VertexIterator end() const { return VertexIterator(adj_list, (int)adj_list.size()); } //TODO int casting o sistemare tipo
+	VertexIterator begin() {return Graph<T>::VertexIterator(adj_list);}
+	VertexIterator end() {return  Graph<T>::VertexIterator(adj_list, adj_list.size());}
 
 
-	//edge iterator
+	//iteratore per gli archi
 	class EdgeIterator {
 
 		//iterator traits
@@ -85,38 +93,19 @@ public:
 		AdjListIterator edge_it;
 		friend class Graph<T>;
 	};
-	EdgeIterator begin(int v) { return EdgeIterator(adj_list[v].begin()); }
-	EdgeIterator end(int v) { return EdgeIterator(adj_list[v].end()); }
+	EdgeIterator begin(int v) {return  Graph<T>::EdgeIterator(adj_list[v].begin());}
+	EdgeIterator end(int v) {return  Graph<T>::EdgeIterator(adj_list[v].end());}
 
-
-
+	//metodi di classe
 	static const Graph<T> dijkstra(Graph g, int src);	
 	static const Graph<T> bellmanFord(Graph g, int src);
 
-
-	const std::vector<std::forward_list<std::pair<int, T>>> getAdjList() { return adj_list; }
-	const int getNumVertex() { return static_cast<int>(adj_list.size()); } //cast statico per aggirare il warning "size_t -> int", non dà problemi perchè size_t e int sono compatibili.
-	
-	const T getEdgeWeight(int src, int dst) 
-	{
-		//find the weight of the edge from src to dst
-		for (auto it = begin(src); it != end(src); ++it)
-		{
-			auto edge = *it;
-			if (edge.first == dst)
-			{
-				return edge.second;
-			}
-		}
-		return -1; //TODO gestire errore? Si potrebbe mai verificare?
-	}
-
-	void reset(){adj_list.clear(); }
-
 private:
+	//membri
 	std::vector<std::forward_list<std::pair<int, T>>> adj_list;
-	//std::vector<std::forward_list<std::tuple<int, int, T>>> adj_list;
-	static Graph<T> build_shortest_path_tree(Graph<T> g, std::vector<int>& prev, std::vector<T>& dist);
+	
+	//metodi privati
+	static const Graph<T> buildShortestPathTree(Graph<T> g, std::vector<int>& prev, std::vector<T>& dist);
 };
 
 #include "Graph_code.hpp"
