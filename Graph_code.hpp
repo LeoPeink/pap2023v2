@@ -18,7 +18,7 @@ void Graph<T>::addEdge(int src,int dst, T weigth)
 	adj_list[src].push_front(std::make_pair(dst, weigth));
 }
 
-
+/*
 template <typename T>
 const void Graph<T>::dijkstra() //TODO sistemare tipo di ritorno
 {
@@ -30,3 +30,5 @@ const void Graph<T>::bellmanFord() //TODO sistemare tipo di ritorno
 {
 	std::cout << "I still do nothing! Implement me!";
 }
+
+*/

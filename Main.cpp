@@ -13,27 +13,18 @@ int main()
 	g.addEdge(1, 2, 5.6);
 	g.addEdge(2, 0, 7.8);
 	g.addEdge(2, 3, 9.0);
-	g.addEdge(3, 3, 10.1);
-	g.addEdge(90, 100, 5000);
-	
-	//auto it = g.v_begin();
+	g.addEdge(3, 3, 10.1);	
 
-	
-	for (auto it = g.v_begin(); it != g.v_end(); ++it) 
+	//stampa tutti gli archi
+	for (auto it = g.begin(); it != g.end(); ++it)
 	{
-		std::cout << "Vertice in analisi:" << it.get_index() << ": ";
-		//auto adj = g.getAdjList()[it.get_index()];
-		//stampa tutti gli archi collegati a it
-		/*
-		for (auto it2 = g.e_begin(it.get_index()); it2 != g.e_end(it.get_index()); ++it2)
+		std::cout << "Vertex " << *it << " has edges: ";
+		for (auto it2 = g.begin(*it); it2 != g.end(*it); ++it2)
 		{
-			std::cout << it2.get_index() << " ";
+			std::cout << "(" << it2->first << ", " << it2->second << ") ";
 		}
-		*/
-		
 		std::cout << std::endl;
-	}
-	
+	}	
 	return 0;
 
 	

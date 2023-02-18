@@ -1,119 +1,132 @@
-template <typename T>
+ï»¿template <typename T>
 class Graph
 {
 public:
 	//costruttori
 	Graph() {};		//costruttore di default
-	
+
 	//metodi
 	//void removeVertex(); rimossa per consistenza dei dati
 	void addEdge(int src, int dst, T weigth);
 	//void removeEdge(); rimossa per consistenza dei dati.
 
-
 	class vertex_iterator
 	{
 	public:
+		//iterator traits
 		using iterator_category = std::forward_iterator_tag;
+		using value_type = int;
+		using reference = int&;
+		using pointer = int*;
 		using difference_type = std::ptrdiff_t;
-		//using value = int;
-		using value = std::forward_list<std::pair<int, T>>;
-		using pointer = value*;
-		using reference = value&;
 
-		vertex_iterator() : ptr{ nullptr }, index{ 0 } {} //costruttore originale
-		//costruttore che riceve un puntatore e imposta a 0 l'indice
-		//vertex_iterator(pointer ptr) : ptr{ ptr }, index{ 0 } {} //prova finale
-		//vertex_iterator(pointer ptr) : ptr{ ptr } {} //orig
-		//vertex_iterator(pointer ptr, size_t index) : ptr{ ptr }, index{ index } {} //mod
-		//vertex_iterator(pointer lst, size_t index) : ptr{ ptr } {}
+		//convenience aliases
+		using collection_data_type = std::vector<std::forward_list<std::pair<int, T>>>; //usiamo un alias per evitare di scrivere ogni volta il tipo completo
 
-		vertex_iterator& operator++() { ++ptr; ++index; return *this; } //mod
-		//vertex_iterator& operator++() { ++ptr; return *this; } //orig
-		 
-		vertex_iterator operator++(int) { vertex_iterator tmp{ *this }; ++ptr; ++index; return tmp; } //mod
-		//vertex_iterator operator++(int) { vertex_iterator tmp{ *this }; ++ptr; return tmp; } //orig
+		vertex_iterator() = default;	//default constructible
+		~vertex_iterator() = default;	//destructor
 
-		reference operator*() { return *ptr; }
-		pointer operator->() { return ptr; }
+		vertex_iterator(const collection_data_type& adj_list, int pos = 0) :	//costruttore di copia che riceve un riferimento alla lista di adiacenza e un indice di partenza
+			adj_list{ &adj_list },												//assegna i membri ai parametri
+			pos{pos}
+		{advance_to_valid();}													//e avanza al primo vertice valido
 
-		bool operator==(const vertex_iterator& other) const { return ptr == other.ptr; }
-		bool operator!=(const vertex_iterator& other) const { return ptr != other.ptr; }
+		//overload degli operatori
+		vertex_iterator& operator++() {++pos; advance_to_valid(); return *this;}				//pre-incremento con avanzamento al prossimo vertice valido
+		vertex_iterator operator++(int) {vertex_iterator old(*this); ++(*this); return old;}	//post-incremento con avanzamento al prossimo vertice valido
+		bool operator==(const vertex_iterator& other) const {return pos == other.pos;}			//uguaglianza
+		bool operator!=(const vertex_iterator& other) const {return !(*this == other);}			//disuguaglianza
+		inline int operator*() const {return pos;}												//dereferenziazione
+		//mancano gli operatori -> e * perche' non abbiamo un puntatore a un oggetto, ma un iteratore a un intero.
+	
+	private:
+		void advance_to_valid()		//questa  funzione avanza al prossimo vertice valido, utile per non dover gestire a monte gli iteratori invalidi.
+		{
+			while (pos < adj_list->size() && (*adj_list)[pos].empty()) 
+			{
+				++pos;
+			}
+		}
 
-		size_t get_index() const { return index; }
+		const collection_data_type* adj_list = nullptr;
+		int pos = 0;
+	};
+
+	vertex_iterator begin() const {return vertex_iterator(adj_list);}
+
+	vertex_iterator end() const {return vertex_iterator(adj_list, adj_list.size());}
+	
+	
+	//edge iterator
+	template <typename T>
+	class edge_iterator : public std::iterator<std::forward_iterator_tag, std::pair<int, T>>
+	{
+	public:
+		edge_iterator(typename std::vector<std::forward_list<std::pair<int, T>>>::iterator it_list, typename std::forward_list<std::pair<int, T>>::iterator it_edge)
+			: it_list_(it_list), it_edge_(it_edge)
+		{}
+
+		edge_iterator& operator++()
+		{
+			++it_edge_;
+			if (it_edge_ == it_list_->end())
+			{
+				++it_list_;
+				if (it_list_ != end_list_)
+					it_edge_ = it_list_->begin();
+			}
+			return *this;
+		}
+
+		bool operator==(const edge_iterator& other) const
+		{
+			return it_list_ == other.it_list_ && it_edge_ == other.it_edge_;
+		}
+
+		bool operator!=(const edge_iterator& other) const
+		{
+			return !(*this == other);
+		}
+
+		std::pair<int, T>& operator*()
+		{
+			return *it_edge_;
+		}
+
+		std::pair<int, T>* operator->()
+		{
+			return &(*it_edge_);
+		}
 
 	private:
-		pointer ptr;
-		size_t index; //mod
-		vertex_iterator(pointer ptr) : ptr{ ptr }, index{ 0 } {}	//costruttore privato per creare un iteratore a partire da un puntatore: privato per evitare mismatch di tipi tra il container e l'iteratore
+		typename std::vector<std::forward_list<std::pair<int, T>>>::iterator it_list_;
+		typename std::vector<std::forward_list<std::pair<int, T>>>::iterator end_list_;
+		typename std::forward_list<std::pair<int, T>>::iterator it_edge_;
 
 		friend class Graph<T>;
 	};
 
-	class edge_iterator
+	edge_iterator<T> begin(int v)
 	{
-	public:
-		using iterator_category = std::forward_iterator_tag;	//iterator_category: è un forward
-		using difference_type = std::ptrdiff_t;					//la differenza tra puntatori è un ptrdiff_type 
-		using value = std::pair<int, T>;										//il tipo di dato che contiene l'iteratore
-		using pointer = value*;									//il tipo di dato puntato dall'iteratore
-		using reference = value&;								//il tipo riferimento puntato dall'iteratore
+		return edge_iterator<T>(adj_list.begin() + v, adj_list.at(v).begin());
+	}
 
-		edge_iterator() : ptr{ nullptr } {};												//costruttore di default
-		//iterator(const iterator& it) : it{ it.it } {};									//costruttore di copia: inutile perchè già implicitamente implementato 
-		//iterator& operator=(const iterator& it) { this->it = it.it; return *this; }		//operatore di copia  : inutile perchè già implicitamente implementato
-		edge_iterator& operator++() { ++ptr; return *this; }								//operatore di incremento prefisso
-		edge_iterator operator++(int) { edge_iterator tmp{ *this }; ++ptr; return tmp; }//operatore di incemento postfisso
-		inline reference operator*() { return *ptr; }										//operatore di dereferenziazione
-		inline pointer operator->() { return ptr; }											//operatore puntatore			
-		inline bool operator==(const edge_iterator& it) { return ptr == it.ptr; }			//operatore uguaglianza
-		inline bool operator!=(const edge_iterator& it) { return ptr != it.ptr; }			//operatore disuguaglianza
+	edge_iterator<T> end(int v)
+	{
+		return edge_iterator<T>(adj_list.end(), adj_list.back().end());
+	}
 
 
-	private:
-		edge_iterator(pointer ptr) : ptr{ ptr } {};		//costruttore privato per creare un iteratore a partire da un puntatore: privato per evitare mismatch di tipi tra il container e l'iteratore
-
-		pointer ptr; //puntatore all'elemento associato all'iteratore
-
-		friend class Graph<T>;	//permette a Graph di accedere ai membri privati di iterator
-	};
-
-	inline vertex_iterator v_begin() { return vertex_iterator{ &adj_list[0], 0 }; }	//ritorna un iteratore al primo elemento del vettore di vertici
-	inline vertex_iterator v_end() { return vertex_iterator{ &adj_list[adj_list.size() - 1] + 1 }; }	//ritorna un iteratore all'ultimo elemento del vettore di v
-	inline edge_iterator e_begin() { return  edge_iterator{ adj_list[i].begin()}; }	//ritorna un iteratore
-	inline edge_iterator e_end() { return edge_iterator{ adj_list[i].end() }; }	//ritorna un iteratore
-
+	/*
 	static const void dijkstra();
 	static const void bellmanFord();
-
+	*/
 	//getter&setter
-	const std::vector<std::forward_list<std::pair<int, T>>> getAdjList(){return adj_list;}
+	const std::vector<std::forward_list<std::pair<int, T>>> getAdjList() { return adj_list; }
 
 
 private:
-	/*by deisgn, il grafo è rappresentato da una collezione di liste, ergo un std::vector di std::forward_list.
-	ogni indice del vector corrisponde ad un vertice, ogni elemento della list corrisponde ad un arco in partenza dal vertice [i] 
-	ed in arrivo al contenuto della lista, rappresentata da una std::pair.
 
-	L'idea è:
-
-	idx vector	list[0]	 list[1]  list[2]..
-	[0]			|2,3| -> |1,5| -> |3,-2|	//dal nodo 0 partono gli archi: 0->2 con costo 3, 0->1 con costo 5, 0->3 con costo -2.
-	[1]			|3,2| -> |2,-3|				//dal nodo 1 partono gli archi: 1->3 con costo 2, 1->2 con costo -3
-	...ecc ecc
-	*/
 	std::vector<std::forward_list<std::pair<int, T>>> adj_list;
-	//ALTERNATIVA SEMPLIFICATA: uso una terna (tupla di 3) in modo da salvare sempre anche il nodo di partenza (ridondanza? Non lo so in automatico con l'index del vettore??)
 	//std::vector<std::forward_list<std::tuple<int, int, T>>> adj_list;
-	/*by deisgn, il grafo è rappresentato da una collezione di liste, ergo un std::vector di std::forward_list.
-	ogni indice del vector corrisponde ad un vertice, ogni elemento della list corrisponde ad un arco in partenza dal vertice [i]
-	ed in arrivo al contenuto della lista, rappresentata da una std::pair.
-
-	L'idea è:
-
-	idx vector	list[0]	 list[1]  list[2]..
-	[0]			|0,2,3| -> |0,1,5| -> |0,3,-2|	//dal nodo 0 partono gli archi: 0->2 con costo 3, 0->1 con costo 5, 0->3 con costo -2.
-	[1]			|1,3,2| -> |1,2,-3|				//dal nodo 1 partono gli archi: 1->3 con costo 2, 1->2 con costo -3
-	...ecc ecc
-	*/
 };
