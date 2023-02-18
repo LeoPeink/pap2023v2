@@ -111,7 +111,7 @@ public:
 		return -1; //TODO gestire errore? Si potrebbe mai verificare?
 	}
 
-	void reset(){adj_list.clear();}
+	void reset(){adj_list.clear(); }
 
 private:
 	std::vector<std::forward_list<std::pair<int, T>>> adj_list;

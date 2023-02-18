@@ -47,7 +47,7 @@ inline const Graph<T> Graph<T>::dijkstra(Graph g, int src)
                 T w = edge.second;      //( "w" il peso dell'arco )
                 
 				if (w < 0) { throw std::runtime_error("Grafo con pesi negativi"); } //controllo sulla validità del grafo in input
-
+                 
                 if (distances[v] > distances[u] + w)    // Se il cammino in analisi conviene rispetto all'ultimo cammino trovato,
                 {  
                     distances[v] = distances[u] + w;            //aggiorno la distanza da src a v,
