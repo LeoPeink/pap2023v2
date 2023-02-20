@@ -1,6 +1,4 @@
 #include <iostream>
-#include <vector>
-#include <queue>
 #include <chrono>
 
 #include "Graph.hpp"
@@ -13,7 +11,7 @@ void menu()
 	do
 	{
 		std::cout << std::endl << "---GRAPH DEMO:---" << std::endl << std::endl;
-		std::cout << "0) Generate a demo graph as for graph_demo_0.png. This graph contains a negative cycle." << std::endl;
+		std::cout << "0) Generate a demo graph as for 'Grafo 3'. This graph contains a negative cycle." << std::endl;
 		std::cout << "1) Generate a demo graph as for graph_demo_1.png. This graph has only positive edges." << std::endl;
 		std::cout << "2) Generate a demo graph as for graph_demo_2.png.This graph has positive and negative edges." << std::endl;
 		std::cout << "3) Print the loaded graph on standard output" << std::endl;
@@ -26,50 +24,48 @@ void menu()
 		case 0:
 		{
 			g.reset();
-			//GRAPH for BELLMAN-FORD testing, as for graph_demo_0.png 
-			g.addEdge(0, 1, 10);
-			g.addEdge(0, 5, 8);
-			g.addEdge(1, 3, -2);
-			g.addEdge(2, 1, 1);
-			g.addEdge(3, 2, -2);
-			g.addEdge(3, 4, -1);
-			g.addEdge(4, 1, -4);
-			g.addEdge(5, 4, 1);
+			//GRAPH for BELLMAN-FORD testing, as for 'Grafo 3'
+			g.addEdge(0, 4, 4);
+			g.addEdge(1, 2, 7);
+			g.addEdge(2, 4, -4);
+			g.addEdge(3, 5, -6);
+			g.addEdge(4, 3, 3);
+			g.addEdge(5, 4, 5);
+			g.addEdge(5, 0, 2);
+			g.addEdge(5, 1, -8);
+
 			
-			std::cout << "graph_demo_0 has been loaded and is ready." << std::endl;
+			std::cout << "'Grafo 3' has been loaded and is ready." << std::endl;
 			break;
 		}
 		case 1:
 		{
 			g.reset();
-			//GRAPH for DIJKSTRA testing, as for graph_demo_1.png 
-			g.addEdge(0, 1, 4);
-			g.addEdge(0, 2, 2);
-			g.addEdge(1, 2, 3);
-			g.addEdge(1, 3, 2);
-			g.addEdge(1, 4, 3);
-			g.addEdge(2, 1, 1);
-			g.addEdge(2, 3, 4);
-			g.addEdge(2, 4, 5);
-			g.addEdge(4, 3, 1);
+			//GRAPH for DIJKSTRA testing, as for 'Grafo 1'
+			g.addEdge(0, 1, 2);
+			g.addEdge(0, 5, 3);
+			g.addEdge(1, 2, 5);
+			g.addEdge(2, 3, 7);
+			g.addEdge(2, 4, 8);
+			g.addEdge(3, 5, 4);
+			g.addEdge(4, 1, 3);
 
-			std::cout << "graph_demo_1 has been loaded and is ready." << std::endl;
+			std::cout << "'Grafo 1' has been loaded and is ready." << std::endl;
 			break;
 		}
 		case 2:
 		{
 			g.reset();
-			//GRAPH for BELLMAN-FORD testing, as for graph_demo_2.png 
-			g.addEdge(0, 1, 10);
-			g.addEdge(0, 5, 8);
-			g.addEdge(1, 3, 2);
-			g.addEdge(2, 1, 1);
-			g.addEdge(3, 2, -2);
-			g.addEdge(4, 3, -1);
+			//GRAPH for BELLMAN-FORD testing, as for 'Grafo 4'.png 
+			g.addEdge(0, 3, -6);
+			g.addEdge(0, 2, 6);
+			g.addEdge(2, 4, 2);
+			g.addEdge(2, 3, -1);
+			g.addEdge(3, 1, 1);
 			g.addEdge(4, 1, -4);
-			g.addEdge(5, 4, 1);
+			g.addEdge(5, 0, 8);
 
-			//std::cout << "graph_demo_2 has been loaded and is ready." << std::endl;
+			std::cout << "'Grafo 4' has been loaded and is ready." << std::endl;
 			break;
 		}
 		case 3:
@@ -102,7 +98,7 @@ void menu()
 				auto inizio = std::chrono::high_resolution_clock::now();
 				res = Graph<double>::dijkstra(g, src);
 				auto fine = std::chrono::high_resolution_clock::now();
-				tempo = std::chrono::duration_cast<std::chrono::nanoseconds>(fine - inizio).count(); res = Graph<double>::dijkstra(g, src);
+				tempo = std::chrono::duration_cast<std::chrono::nanoseconds>(fine - inizio).count();
 			}
 			catch (const std::exception& e)
 			{
@@ -124,7 +120,7 @@ void menu()
 				}
 				std::cout << std::endl;
 			}
-			std::cout << "Dijkstra algorithm took " << tempo << " milliseconds to complete." << std::endl;
+			std::cout << "Dijkstra algorithm took " << tempo << " nanoseconds to complete." << std::endl;
 
 			break;
 		}
@@ -162,7 +158,7 @@ void menu()
 				}
 				std::cout << std::endl;
 			}
-			std::cout << "Bellman-Ford algorithm took " << tempo << " milliseconds to complete." << std::endl;
+			std::cout << "Bellman-Ford algorithm took " << tempo << " nanoseconds to complete." << std::endl;
 			break;
 		}
 		case 6:

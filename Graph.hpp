@@ -1,9 +1,17 @@
+//header guard
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
 
+//dipendenze
 #include <queue>
 #include <forward_list>
+#include <vector>
+#include <limits>
+#include <iostream>
+#include <algorithm>
+#include <iterator>
 
+//definizione classe
 template <typename T>
 class Graph
 {
@@ -13,7 +21,7 @@ public:
 	Graph() {};		
 	~Graph() = default;	
 
-	//metodi
+	//membri
 	void addEdge(int src, int dst, T weigth);
 	void reset();
 
@@ -66,7 +74,7 @@ public:
 		int pos = 0;
 	};
 	VertexIterator begin() {return Graph<T>::VertexIterator(adj_list);}
-	VertexIterator end() {return  Graph<T>::VertexIterator(adj_list, adj_list.size());}
+	VertexIterator end() {return  Graph<T>::VertexIterator(adj_list, static_cast<int>(adj_list.size()));}
 
 
 	//iteratore per gli archi
@@ -82,6 +90,8 @@ public:
 		using AdjListIterator = typename std::forward_list<std::pair<int, T>>::iterator; //usiamo un alias per evitare di scrivere ogni volta il tipo completo
 
 	public:
+		//costruttore di default
+		EdgeIterator() = default;
 		EdgeIterator(AdjListIterator edge_it) : edge_it(edge_it) {}							// Costruttore di copia
 		reference operator*() { return *edge_it; }												// Operatore di dereferenziazione, restituisce l'arco corrente
 		EdgeIterator& operator++() { ++edge_it; return *this; }									// Operatore di incremento prefisso, sposta l'iteratore all'arco successivo
@@ -93,8 +103,24 @@ public:
 		AdjListIterator edge_it;
 		friend class Graph<T>;
 	};
-	EdgeIterator begin(int v) {return  Graph<T>::EdgeIterator(adj_list[v].begin());}
-	EdgeIterator end(int v) {return  Graph<T>::EdgeIterator(adj_list[v].end());}
+	EdgeIterator begin(int v) 
+	{
+		if (v >= adj_list.size())
+		{
+			return EdgeIterator();
+		}
+		return EdgeIterator(adj_list[v].begin());
+	}
+
+	
+	EdgeIterator end(int v) 
+	{
+		if (v >= adj_list.size())
+		{
+			return EdgeIterator();
+		}
+		return  Graph<T>::EdgeIterator(adj_list[v].end());
+	}
 
 	//metodi di classe
 	static const Graph<T> dijkstra(Graph g, int src);	
