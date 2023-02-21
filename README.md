@@ -4,7 +4,7 @@
 
 *Autori: Leo Peinkhofer, Lorenzo Di Bernardo*
 
-**<h2>Documentazione:</h2>**<ul> <li>**Graph** -> Includendo Graph.hpp si includono automaticamente le librerie: *"queue", "vector", "forward_list", "pair", "limits", "algorithm"</li>*
+**<h2>Documentazione:</h2>**<ul> <li>**Graph** -> Includendo Graph.hpp si includono automaticamente le librerie: *"queue", "vector", "forward_list", "pair", "limits", "algorithm", "iterator"</li>*
 
 <li>Graph è una classe template che accetta qualsiasi tipo primitivo come T. T rappresenta il tipo di pesi degli archi del grafo.</li></ul>
 
@@ -18,13 +18,13 @@
 
 **<h2>Metodi pubblici:**</h2>
 
-  <ul><li><code>std::string getName():</code> Restituisce il nome del grafo</li>
-    <li><code>void addVertex(T v):</code> Aggiunge un vertex a vertices, bisogna specificare un identificatore (di tipo T).</li>
-    <li><code>void removeVertex(T v):</code> Rimuove v da vertices</li>
-    <li><code>void addEdge(T src, T dst, int weight):</code> Aggiunge un arco da srt a dst di peso weight a edges.</li>
-    <li><code>void removeEdge(T src, T dst):</code> Rimuove il vertice da src a dst</li>
-    <li><code>vertex_iterator v_begin():</code> Ritorna un iteratore al primo elemento del vettore</li>
-    <li><code>vertex_iterator v_end():</code> Ritorna un iteratore all'ultimo elemento del vettore</li></ul></ul>
+  <ul>
+    <li><code>void addEdge(int src, int dst, T weight):</code> Aggiunge un arco da srt a dst di peso weight alla adj_list.</li>
+    <li><code>VertexIterator begin():</code> Ritorna un iteratore al primo elemento del vettore</li>
+    <li><code>VertexIterator end():</code> Ritorna un iteratore all'ultimo elemento del vettore</li>
+    <li><code>EdgeIterator begin(int v):</code> Ritorna un iteratore al primo elemento della lista di adiacenza in posizione [v] del vettore</li>
+    <li><code>EdgeIterator end(int v):</code> Ritorna un iteratore dopo l'ultimo elemento della lista in posizione [v] del vettore </li>
+    </ul>
 
 **<h2>Metodi della classe:**</h2><ul><li> 
 `std::unordered_map<T, int>> dijkstra(Graph g, T src):` 
