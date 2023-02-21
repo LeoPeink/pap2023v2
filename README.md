@@ -10,33 +10,34 @@
 
 **<h2>Attributi Graph non espone attributi pubblici:</h2>**
 
-<ul><li><code>(private) std::vector <std::forward_list<std::pair<int, T>>> adj_list; </code>
+<ul><li><code>(private) std::vector < std::forward_list < std::pair < int, T > > > adj_list; </code>
 <ul><li>È la lista di adiacenza che contiene tutti gli archi che compongono il grafo.</li> <li>Ogni vertice è univocamente identificato dall'indice del "std::vector" in cui si trova.</li> <li>Ogni "forward_list" rappresenta gli archi in partenza dal nodo std::vector[n] (private) std::string name</li></ul></ul>
 
-  <ul><li><code>(private) const std::vector<std::forward_list<std::pair<int, T>>> getAdjList():</code> Restituisce il vector di liste di archi.</li></ul>
-  
+  <ul><li><code>(private) std::vector < std::forward_list < std::pair < int, T > > > getAdjList(): </code> Restituisce il vector di liste di archi.</li></ul>
+  <ul><li><code>(private) Graph<T> buildShortestPathTree(Graph<T> g, std::vector<int>& prev, std::vector<T>& dist);</code> Restituisce, a partire da un vettore con le distanze ed un vettore con i precedenti di ogni nodo, l'albero dei cammini minimi. Metodo privato richiamato soltanto in "dijkstra" e "bellmanFord".</li></ul>
 **<h2>Metodi pubblici:**</h2>
 
   <ul>
     <li><code>void addEdge(int src, int dst, T weight):</code> Aggiunge un arco da srt a dst di peso weight alla adj_list.</li>
-    <li><code>VertexIterator begin():</code> Ritorna un iteratore al primo elemento del vettore</li>
-    <li><code>VertexIterator end():</code> Ritorna un iteratore all'ultimo elemento del vettore</li>
-    <li><code>EdgeIterator begin(int v):</code> Ritorna un iteratore al primo elemento della lista di adiacenza in posizione [v] del vettore</li>
-    <li><code>EdgeIterator end(int v):</code> Ritorna un iteratore dopo l'ultimo elemento della lista in posizione [v] del vettore </li>
-    </ul>
+    <li><code>VertexIterator begin():</code> Restituisce un iteratore al primo elemento del vettore</li>
+    <li><code>VertexIterator end():</code> Restituisce un iteratore all'ultimo elemento del vettore</li>
+    <li><code>EdgeIterator begin(int v):</code> Restituisce un iteratore al primo elemento della lista di adiacenza in posizione [v] del vettore</li>
+    <li><code>EdgeIterator end(int v):</code> Restituisce un iteratore dopo l'ultimo elemento della lista in posizione [v] del vettore </li>
+    <li><code>int getNumVertex():</code> Restituisce la quantità di vertici da cui parte almeno un arco.</li>
+    <li><code>T getEdgeWeight(int src, int dst)</code> Restituisce il peso dell'arco da "src" a "dst" (se esistente)</li>
+  </ul>
 
 **<h2>Metodi della classe:**</h2><ul><li> 
-`std::unordered_map<T, int>> dijkstra(Graph g, T src):` 
+`Graph<T> dijkstra(Graph g, int src):` 
 <ul><li>Esegue l'algoritmo di Dijkstra sul grafo g specificato, a partire dal nodo src.</li> 
-<li>Ritorna la lista delle distanze come mappa di coppie "nodo di arrivo" : costo di arrivo.</ul></ul></li><ul><li>
+<li>Restituisce un sottografo di "g" avente soltanto i percorsi minimi da "src" a tutti i nodi da esso raggiungibili.</ul></ul></li><ul><li>
   
-  `std::unordered_map<T, int>> bellmanFord(Graph g, T src):`
- 
-<ul><li>Esegue l'algoritmo di Bellman-Ford sul grafo g specificato, a partire dal nodo src.</li><li>Ritorna la lista delle distanze come mappa di coppie "nodo di arrivo" : costo di arrivo.</li></ul></ul>
+ `Graph<T> bellmanFord(Graph g, int src):` 
+<ul><li>Esegue l'algoritmo di Bellman-Ford sul grafo g specificato, a partire dal nodo src.</li> 
+<li>Restituisce un sottografo di "g" avente soltanto i percorsi minimi da "src" a tutti i nodi da esso raggiungibili.</ul></ul></li><ul><li>
 
-**<h2>Varie:</h2>**<ul><li> 
-  <code>errorMessages.h:</code> Questo file contiene vari messaggi di errore che vengono usati per gestire a livello di interfaccia utente alcune eccezioni o casi limite.</li>
-  <li><code>Main.cpp:</code> Questo file sorgente contiene un metodo main() con un menu pre-configurato, al fine di verificare facilmente il funzionamento della libreria tramite CLI.</li></ul>
+**<h2>Varie:</h2>**<ul>
+  <li><code>Main.cpp:</code> Questo file sorgente contiene, oltre ad un main(), un metodo menu() pre-configurato, al fine di verificare facilmente il funzionamento della libreria tramite CLI.</li></ul>
 
 **<h2>Demo images**</h2><ul><li> 
-  La cartella contiene la rappresentazione grafica dei grafi pre-impostati nel menu per facilitare il test della libreria.</ul></li>
+  "Demo images.jpg" contiene la rappresentazione grafica dei grafi pre-impostati nel menu per facilitare il test della libreria.</ul></li>
