@@ -1,4 +1,3 @@
-#include <iostream>
 #include <chrono>
 
 #include "Graph.hpp"
@@ -24,7 +23,7 @@ void menu()
 		case 0:
 		{
 			g.reset();
-			//GRAPH for BELLMAN-FORD testing, as for 'Grafo 3'
+			//GRAPH for BELLMAN-FORD testing, as for 'Grafo 0'
 			g.addEdge(0, 4, 4);
 			g.addEdge(1, 2, 7);
 			g.addEdge(2, 4, -4);
@@ -34,8 +33,7 @@ void menu()
 			g.addEdge(5, 0, 2);
 			g.addEdge(5, 1, -8);
 
-			
-			std::cout << "'Grafo 3' has been loaded and is ready." << std::endl;
+			std::cout << "'Grafo 0' has been loaded and is ready." << std::endl;
 			break;
 		}
 		case 1:
@@ -56,7 +54,7 @@ void menu()
 		case 2:
 		{
 			g.reset();
-			//GRAPH for BELLMAN-FORD testing, as for 'Grafo 4'.png 
+			//GRAPH for BELLMAN-FORD testing, as for 'Grafo 2'.png 
 			g.addEdge(0, 3, -6);
 			g.addEdge(0, 2, 6);
 			g.addEdge(2, 4, 2);
@@ -65,7 +63,7 @@ void menu()
 			g.addEdge(4, 1, -4);
 			g.addEdge(5, 0, 8);
 
-			std::cout << "'Grafo 4' has been loaded and is ready." << std::endl;
+			std::cout << "'Grafo 2' has been loaded and is ready." << std::endl;
 			break;
 		}
 		case 3:
@@ -77,9 +75,9 @@ void menu()
 				for (auto it2 = g.begin(*it); it2 != g.end(*it); ++it2)
 				{
 					// Operazioni sull'arco corrente
-					auto prova = *it2;
-					int dst = prova.first;
-					double weight = prova.second;
+					auto vrt = *it2;
+					int dst = vrt.first;
+					double weight = vrt.second;
 					std::cout << *it << " -> " << dst << ", with weight: " << weight << "\n";
 				}
 				std::cout << std::endl;
@@ -166,7 +164,6 @@ void menu()
 			std::cout << "exiting demo..." << std::endl;
 			break;
 		}
-		Graph<double> g;
 		}
 	} while (selection != 6);
 

@@ -2,49 +2,51 @@
 template <typename T>
 void Graph<T>::addEdge(int src, int dst, T weigth)
 {
-    if(src < 0 || dst < 0)
+    if(src < 0 || dst < 0)      //il programma non supporta nodi con identificativi negativi, perchè rappresentano indici di un vettore.
 	{
 		throw std::invalid_argument("Errore nell'inserimento di un arco: nodo negativo");
 	}
-    if (adj_list.size() <= src)
+    if (adj_list.size() <= src) //se sto inserendo un nodo che "sfora" il vector,
     {
-        adj_list.resize(src + 1);
+        adj_list.resize(src + 1);   //aggiorna la dimensione
     }
-    adj_list[src].push_front(std::make_pair(dst, weigth));
+    adj_list[src].push_front(std::make_pair(dst, weigth));  //ed inseriscilo. 
 }
-
 
 template<typename T>
 inline const std::vector<std::forward_list<std::pair<int, T>>> Graph<T>::getAdjList()
 {
-    return adj_list;
+	return adj_list;    //getter: rende visibile un attributo privato
 }
 
 template<typename T>
 inline const int Graph<T>::getNumVertex()
 {
-    return static_cast<int>(adj_list.size()); //cast statico per aggirare il warning "size_t -> int", non dà problemi perchè size_t e int sono compatibili.
+    return static_cast<int>(adj_list.size()); //cast statico per risolvere il warning "size_t -> int", non dà problemi perchè size_t e int sono compatibili.
 } 
 
 template<typename T>
 inline const T Graph<T>::getEdgeWeight(int src, int dst)
 {
-    //find the weight of the edge from src to dst
-    for (auto it = begin(src); it != end(src); ++it)
+    if (src < 0 || dst < 0)      //il programma non supporta nodi con identificativi negativi, perchè rappresentano indici di un vettore.
     {
-        auto edge = *it;
-        if (edge.first == dst)
+        throw std::invalid_argument("Errore nell'inserimento di un arco: nodo negativo");
+    }
+    for (auto it = begin(src); it != end(src); ++it)        //per estrarre il peso di un determinato arco (ad esempio per costruire l'albero dei cammini minimi)
+	{                                                       //bisogna scorrere tutta la lista di adiacenza del nodo di partenza, e confrontare il nodo di arrivo
+        auto edge = *it;                                    
+		if (edge.first == dst)                              //con quello che si sta cercando. Se coincidono, 
         {
-            return edge.second;
+            return edge.second;                             //si estrae il peso.
         }
     }
-    throw std::invalid_argument("Errore nell'estrazione del peso");
+    throw std::invalid_argument("Errore nell'estrazione del peso: arco non trovato"); //altrimenti, l'arco specificato non esiste.
 }
 
 template<typename T>
 inline void Graph<T>::reset()
 {
-    adj_list.clear();
+	adj_list.clear();   //funzione util per resettare il grafo, in modo da poterlo riutilizzare.
 }
 
 template<typename T>
@@ -73,7 +75,7 @@ inline const Graph<T> Graph<T>::dijkstra(Graph g, int src)
         int u = pq.top().second;    // Prende il vertice con la minima distanza dalla coda con priorita',
         pq.pop();                   // lo rimuove dalla coda.
         
-        if (visited.size() <= u){visited.resize(u + 1, false);} //errore vector out of range
+        if (visited.size() <= u){visited.resize(u + 1, false);} //(controllo che le strutture dati di appoggio abbiano dimensione sufficiente)
 
         if (visited[u] == false)    // Se il nodo corrente non e' gia' stato visitato.
         {
@@ -85,8 +87,7 @@ inline const Graph<T> Graph<T>::dijkstra(Graph g, int src)
                 int v = edge.first;     //( "v" rappresenta il vertice di arrivo )
                 T w = edge.second;      //( "w" il peso dell'arco )
 
-                //(check su dimensione di prec)
-                if (prec.size() <= v || distances.size() <= v || visited.size() <= v)
+				if (prec.size() <= v || distances.size() <= v || visited.size() <= v) //(controllo che le strutture dati di appoggio abbiano dimensione sufficiente)
                 {
                     distances.resize(v + 1, std::numeric_limits<T>::max());
                     prec.resize(v + 1, -1); 
@@ -119,30 +120,30 @@ inline const Graph<T> Graph<T>::bellmanFord(Graph g, int src)
 
     std::vector<T> distances(g.getNumVertex()+1, std::numeric_limits<T>::max());  //vettore con le distanze da src a tutti gli altri
     std::vector<int> prec(g.getNumVertex()+1, -1);                                //vettore con i precedenti, inizializzato a -1
-    distances[src] = 0;                                                            //la distanza src->src e' 0
+    distances[src] = 0;                                                           //la distanza src->src e' 0
 
     for (int i = 1; i < g.getNumVertex(); i++)        //per v-1 volte
     {
         for (auto it_v = g.begin(); it_v != g.end(); ++it_v) //per ogni vertice
         {
-            int u = *it_v; //vertice di partenza
+            int u = *it_v;                                              //"u" rappresenta il vertice di partenza
 
-            for (auto it_e = g.begin(u); it_e != g.end(u); ++it_e)
-            { //estrai gli archi
-                auto edge = *it_e;        // prendo il vertice di arrivo e il peso dell'arco:
-                int v = edge.first;     //( "v" rappresenta il vertice di arrivo )
+            for (auto it_e = g.begin(u); it_e != g.end(u); ++it_e)  //per ogni arco in partenza da "u",
+            {
+                auto edge = *it_e;          // prendo il vertice di arrivo e il peso dell'arco:
+                int v = edge.first;         //( "v" rappresenta il vertice di arrivo )
                 T weigth = edge.second;      //( "w" il peso dell'arco )
                 
-                if (prec.size() <= v || distances.size() <= v)
+				if (prec.size() <= v || distances.size() <= v)  //(controllo che le strutture dati di appoggio abbiano dimensione sufficiente)
                 {
                     distances.resize(v + 1, std::numeric_limits<T>::max());
                     prec.resize(v + 1, -1);
                 }
                 
-                if (distances[u] != std::numeric_limits<T>::max() && distances[u] + weigth < distances[v])//confronto per relax degli archi
+                if (distances[u] != std::numeric_limits<T>::max() && distances[u] + weigth < distances[v]) //se il percorso in analisi conviene rispetto al precedente,
                 {
-                    distances[v] = distances[u] + weigth;
-                    prec[v] = u;
+                    distances[v] = distances[u] + weigth;                                                  //aggiorna le distanze
+                    prec[v] = u;                                                                           //ed imposta il nuovo precedente.
                 }
             }
         }
@@ -161,42 +162,26 @@ inline const Graph<T> Graph<T>::bellmanFord(Graph g, int src)
             if (distances[u] != std::numeric_limits<T>::max() && distances[u] + weight < distances[v])
             { //se è possibile ridurre ancora il cammino minimo allora esiste un ciclo negativo
                 throw std::runtime_error("Ciclo di peso negativo trovato.");
-                //return build_shortest_path_tree(g, prec, distances);
             }
         }
     }
-    //costruisci un Graph con i cammini minimi
+    //costruisci un sottografo di "g" con solo i cammini minimi
     return buildShortestPathTree(g, prec, distances);
 }
 
 template<typename T>
 const Graph<T> Graph<T>::buildShortestPathTree(Graph<T> g, std::vector<int>& prev, std::vector<T>& dist)
 {
-    Graph<T> tree;
+    Graph<T> tree;  //NB: questo metodo è privato e viene richiamato soltanto in "dijkstra" e "bellmanFord", ergo si presuppone che gli array in input siano validi.
 
     // Scandisce i nodi del grafo e inserisce gli archi dell'albero
-    /*
-    for (int i = 0; i < prev.size(); i++)
+    for (int i = 0; i < prev.size(); i++)                               //ciclo con la dimensione dell'array di precedenti perchè la sua dimensione coincide sempre con la quantità di vertici nell'albero di percorsi minimi
     {
-        // Se il nodo corrente e' la radice dell'albero, non ha predecessori
-        if (prev[i] != -1)
+        if (prev[i] != -1)          // Se il nodo corrente non e' la radice dell'albero (la quale non ha predecessori)
         {
-            // Aggiunge l'arco del predecessore al nodo corrente
-            int prev_node = prev[i];
-            T weight = g.getEdgeWeight(prev_node, i);
-            tree.addEdge(prev_node, i, weight);
-        }
-    }
-    */
-    for (auto it = g.begin(); it != g.end(); ++it)
-    {
-        // Se il nodo corrente e' la radice dell'albero, non ha predecessori
-        if (prev[*it] != -1)
-        {
-            // Aggiunge l'arco del predecessore al nodo corrente
-            int prev_node = prev[*it];
-            T weight = g.getEdgeWeight(prev_node, *it);
-            tree.addEdge(prev_node, *it, weight);
+            int prev_node = prev[i];                    //prev_node è il nodo di partenza
+			T weight = g.getEdgeWeight(prev_node, i);   //weigth è il peso dell'arco
+            tree.addEdge(prev_node, i, weight);         //aggiungi all'albero l'arco.
         }
     }
     return tree;

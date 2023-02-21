@@ -111,8 +111,6 @@ public:
 		}
 		return EdgeIterator(adj_list[v].begin());
 	}
-
-	
 	EdgeIterator end(int v) 
 	{
 		if (v >= adj_list.size())
