@@ -53,5 +53,5 @@
 **<h2>Demo images**</h2><ul><li> 
   "Demo images.jpg" contiene la rappresentazione grafica dei grafi pre-impostati nel menu per facilitare il test della libreria.</ul></li>
   
-  **<h2>CMakeLists.txt</h2><ul><li> 
+  **<h2>CMakeLists.txt**</h2><ul><li> 
   "CMakeLists.txt" contiene le direttive per CMake, per generare i file progetto indipendentemente dalla piattaforma. E' necessario creare una cartella "build" in cui chiamare tramite terminale il comando "cmake .." per la creazione del progetto. </ul></li>
