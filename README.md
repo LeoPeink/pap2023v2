@@ -8,7 +8,8 @@
 
 <li>Graph è una classe template che accetta qualsiasi tipo primitivo come T. T rappresenta il tipo di pesi degli archi del grafo.</li></ul>
 
-**<h2>Attributi Graph non espone attributi pubblici:</h2>**
+**<h2>Attributi</h2>**
+Graph non espone attributi pubblici:
 
 <ul>
   <li><code>(private) std::vector < std::forward_list < std::pair < int, T > > > adj_list; </code>
@@ -22,9 +23,6 @@
   <ul>
     <li><code>(private) std::vector < std::forward_list < std::pair < int, T > > > getAdjList(): </code> Restituisce il vector di liste di archi.</li>
   </ul>
-  <ul>
-    <li><code>(private) Graph<T> buildShortestPathTree(Graph<T> g, std::vector<int>& prev, std::vector<T>& dist);</code> Restituisce, a partire da un vettore con le          distanze ed un vettore con i precedenti di ogni nodo, l'albero dei cammini minimi. Metodo privato richiamato soltanto in "dijkstra" e "bellmanFord".</li>
-   </ul>
       
 **<h2>Metodi pubblici:**</h2>
 
