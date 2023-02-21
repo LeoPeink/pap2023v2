@@ -50,7 +50,7 @@ inline void Graph<T>::reset()
 }
 
 template<typename T>
-inline const Graph<T> Graph<T>::dijkstra(Graph g, int src)
+inline const Graph<T> Graph<T>::dijkstra(Graph& g, int src)
 {
     if (src < 0 || src >= g.getNumVertex()) // Verifica che il nodo di partenza sia valido
     {
@@ -110,7 +110,7 @@ inline const Graph<T> Graph<T>::dijkstra(Graph g, int src)
 }
 
 template<typename T>
-inline const Graph<T> Graph<T>::bellmanFord(Graph g, int src)
+inline const Graph<T> Graph<T>::bellmanFord(Graph& g, int src)
 {
     if (src < 0 || src >= g.getNumVertex()) // Verifica che il nodo di partenza sia valido
     {
@@ -170,7 +170,7 @@ inline const Graph<T> Graph<T>::bellmanFord(Graph g, int src)
 }
 
 template<typename T>
-const Graph<T> Graph<T>::buildShortestPathTree(Graph<T> g, std::vector<int>& prev, std::vector<T>& dist)
+const Graph<T> Graph<T>::buildShortestPathTree(Graph<T>& g, std::vector<int>& prev, std::vector<T>& dist)
 {
     Graph<T> tree;  //NB: questo metodo è privato e viene richiamato soltanto in "dijkstra" e "bellmanFord", ergo si presuppone che gli array in input siano validi.
 

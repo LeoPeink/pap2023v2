@@ -121,15 +121,15 @@ public:
 	}
 
 	//metodi di classe
-	static const Graph<T> dijkstra(Graph g, int src);	
-	static const Graph<T> bellmanFord(Graph g, int src);
+	static const Graph<T> dijkstra(Graph& g, int src);	
+	static const Graph<T> bellmanFord(Graph& g, int src);
 
 private:
 	//membri
 	std::vector<std::forward_list<std::pair<int, T>>> adj_list;
 	
 	//metodi privati
-	static const Graph<T> buildShortestPathTree(Graph<T> g, std::vector<int>& prev, std::vector<T>& dist);
+	static const Graph<T> buildShortestPathTree(Graph<T>& g, std::vector<int>& prev, std::vector<T>& dist);
 };
 
 #include "Graph_code.hpp"
