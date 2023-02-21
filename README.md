@@ -9,7 +9,7 @@
 <li>Graph è una classe template che accetta qualsiasi tipo primitivo come T. T rappresenta il tipo di pesi degli archi del grafo.</li></ul>
 
 **<h2>Attributi</h2>**
-Graph non espone attributi pubblici:
+(Graph non espone attributi pubblici)
 
 <ul>
   <li><code>(private) std::vector < std::forward_list < std::pair < int, T > > > adj_list; </code>
