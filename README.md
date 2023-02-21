@@ -10,11 +10,22 @@
 
 **<h2>Attributi Graph non espone attributi pubblici:</h2>**
 
-<ul><li><code>(private) std::vector < std::forward_list < std::pair < int, T > > > adj_list; </code>
-<ul><li>È la lista di adiacenza che contiene tutti gli archi che compongono il grafo.</li> <li>Ogni vertice è univocamente identificato dall'indice del "std::vector" in cui si trova.</li> <li>Ogni "forward_list" rappresenta gli archi in partenza dal nodo std::vector[n] (private) std::string name</li></ul></ul>
+<ul>
+  <li><code>(private) std::vector < std::forward_list < std::pair < int, T > > > adj_list; </code>
+<ul>
+  <li>È la lista di adiacenza che contiene tutti gli archi che compongono il grafo.</li> 
+  <li>Ogni vertice è univocamente identificato dall'indice del "std::vector" in cui si trova.</li> 
+  <li>Ogni "forward_list" rappresenta gli archi in partenza dal nodo</li>
+  </ul>
+  </ul>
 
-  <ul><li><code>(private) std::vector < std::forward_list < std::pair < int, T > > > getAdjList(): </code> Restituisce il vector di liste di archi.</li></ul>
-  <ul><li><code>(private) Graph<T> buildShortestPathTree(Graph<T> g, std::vector<int>& prev, std::vector<T>& dist);</code> Restituisce, a partire da un vettore con le distanze ed un vettore con i precedenti di ogni nodo, l'albero dei cammini minimi. Metodo privato richiamato soltanto in "dijkstra" e "bellmanFord".</li></ul>
+  <ul>
+    <li><code>(private) std::vector < std::forward_list < std::pair < int, T > > > getAdjList(): </code> Restituisce il vector di liste di archi.</li>
+  </ul>
+  <ul>
+    <li><code>(private) Graph<T> buildShortestPathTree(Graph<T> g, std::vector<int>& prev, std::vector<T>& dist);</code> Restituisce, a partire da un vettore con le          distanze ed un vettore con i precedenti di ogni nodo, l'albero dei cammini minimi. Metodo privato richiamato soltanto in "dijkstra" e "bellmanFord".</li>
+   </ul>
+      
 **<h2>Metodi pubblici:**</h2>
 
   <ul>
