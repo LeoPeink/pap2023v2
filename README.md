@@ -12,10 +12,9 @@
 
 <ul><li><code>(private) std::vector<std::forward_list<std::pair<int, T>>> adj_list;</code>
 <ul><li>È la lista di adiacenza che contiene tutti gli archi che compongono il grafo.</li> <li>Ogni vertice è univocamente identificato dall'indice del "std::vector" in cui si trova.</li> <li>Ogni "forward_list" rappresenta gli archi in partenza dal nodo std::vector[n] (private) std::string name</li></ul></ul>
-  <ul><li><code>(private) std::unordered_map<T, std::unordered_map<T, int>> edges;</code></li></ul>
-  <ul><li><code>(private) std::vector getVertices():</code> Restituisce il vector di vertici</li></ul>
-  <ul><li><code>(private) std::unordered_map<T, std::unordered_map<T, int>> getEdges():</code> Restituisce la mappa di mappe contenente archi e pesi</li></ul>
 
+  <ul><li><code>(private) const std::vector<std::forward_list<std::pair<int, T>>> getAdjList():</code> Restituisce il vector di liste di archi.</li></ul>
+  
 **<h2>Metodi pubblici:**</h2>
 
   <ul>
